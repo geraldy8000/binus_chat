@@ -1,0 +1,18 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "babingepet",
+    "database": "binus_chat_dev",
+    "host": "128.199.124.158",
+    "port" : 5432,
+    "dialect": "postgres"
+  },
+  "test": {
+    "username": "postgres",
+    "password": "babingepet",
+    "database": "binus_chat_test",
+    "host": "128.199.124.158",
+    "port" : 5432,
+    "dialect": "postgres"
+  }
+}
