@@ -319,7 +319,7 @@ a {
   height: 304px;
 }
 .bottom-section {
-  position: absolute;
+  position: relative;
   left: 0px;
   right: 0px;
   bottom: 0px;
