@@ -232,6 +232,6 @@ module.exports = function(io,speech,u_id,param){
                     })
 
             })
-            .catch(error => io.emit('bot-reply', "Claas not found"));
+            .catch(error => io.emit('bot-reply', "Sorry, the claas that you ask is not found"));
     }
 }
