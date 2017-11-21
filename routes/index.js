@@ -13,6 +13,7 @@ var financialAccController = require('../database/controllers').financialAccount
 var courseAccController = require('../database/controllers').course;
 var takenCourseAccController = require('../database/controllers').takenCourse;
 var classesController = require('../database/controllers').classes;
+var scoreController = require('../database/controllers').score;
 
 /* GET home page. */
 
@@ -24,6 +25,9 @@ router.get('/community', function(req, res, next) {
 
 router.get('/api/student', studentController.list);
 router.post('/api/student', studentController.create);
+router.delete('/api/student', studentController.destroy);
+router.put('/api/student', studentController.update);
+
 
 //Comm Service Routes
 router.get('/api/com/:student_id', comServiceController.getDetails);
@@ -49,7 +53,7 @@ router.get('/api/satEvent', satEventController.getAllEvent);
 router.get('/api/financial', financialController.listAll);
 router.get('/api/financial/:student_id', financialController.list);
 router.post('/api/financial/:student_id', financialController.insertNewData);
-router.delete('/api/financial/:id', financialController.destroy);
+router.delete('/api/financial', financialController.destroy);
 
 
 //Bank Account Routes
@@ -59,12 +63,20 @@ router.post('/api/financialAcc/:student_id', financialAccController.insertNewDat
 //Course Routes
 router.get('/api/course/', courseAccController.listAll);
 router.post('/api/course/', courseAccController.create);
+router.put('/api/course/', courseAccController.update);
 
 router.get('/api/takenCourse/', takenCourseAccController.listAll);
 router.post('/api/takenCourse/', takenCourseAccController.insertNewData);
+router.delete('/api/takenCourse/', takenCourseAccController.destroy);
 
 router.get('/api/classes/', classesController.listAll);
 router.post('/api/classes/', classesController.insertNewData);
-router.put('/api/classes/:id', classesController.update);
+router.put('/api/classes/', classesController.update);
+
+router.get('/api/score/', scoreController.listAll);
+router.post('/api/score/', scoreController.insertNewData);
+router.delete('/api/score/', scoreController.destroy);
+router.put('/api/score/', scoreController.update);
+
 
 module.exports = router;

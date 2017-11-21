@@ -22,6 +22,19 @@ module.exports = {
             .then( (co) => res.status(201).send(co))
             .catch(error => res.status(400).send(error));
     },
+    update(req, res) {
+    return course
+        .findOne({where: {id: req.body.course_id}})
+        .then(co => {
+            if(co){
+                co.updateAttributes({
+                    course_name: req.body.course_name
+                })
+                .then( (co) => res.status(201).send(co))
+            }
+        })
+        .catch((error) => res.status(400).send(error));
+    },
     getCourseDetails(id){
         return course
             .findOne({where: {course_id: id}})

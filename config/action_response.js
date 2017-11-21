@@ -8,6 +8,8 @@ var financialController = require('../database/controllers').financial;
 var takenCourseController = require('../database/controllers').takenCourse;
 var courseController = require('../database/controllers').course;
 var classesController = require('../database/controllers').classes;
+var scoreController = require('../database/controllers').score;
+
 var dateFormat = require('dateformat');
 
 module.exports = function(io,speech,u_id,param){
@@ -35,27 +37,32 @@ module.exports = function(io,speech,u_id,param){
 
             comServiceController.getTotalCommunityServiceHour()
                 .then((points) => {
+                    if(!points){
+                        io.emit('bot-reply', "None");
+                    }
+                    else{
+                        comServiceController.getFinishedActivity()
+                            .then( (activity) => {
+                                var remaining_points_to_earn = 30 - points;
+                                var activities_string = "";
 
-                    comServiceController.getFinishedActivity()
-                        .then( (activity) => {
-                            var remaining_points_to_earn = 30 - points;
-                            var activities_string = "";
+                                activity.forEach(function(data){
+                                    activities_string += "<b>" + data.activity_name + "</b> - " + data.project_name + ": " + data.hours + " hours <br /><br />";
+                                });
 
-                            activity.forEach(function(data){
-                                activities_string += data.activity_name + " - " + data.project_name + ": " + data.hours + " hours <br /><br />";
-                            });
+                                io.emit('bot-reply', "You currently held " + points + " out of 30 points.<br /><br />" +
+                                        activities_string);
 
-                            io.emit('bot-reply', "You currently held " + points + " out of 30 points.<br /><br />" +
-                                    activities_string);
+                                io.emit('bot-reply', "It seems that you're still missing about " + remaining_points_to_earn + " points.<br /><br />"+
+                                        "Do you want me to show you upcoming community service events by Binus?");
 
-                            io.emit('bot-reply', "It seems that you're still missing about " + remaining_points_to_earn + " points.<br /><br />"+
-                                    "Do you want me to show you upcoming community service events by Binus?");
-                        })
-                        .catch((error) => io.emit('bot-reply', error));
+                            })
+                    
+                            .catch((error) => io.emit('bot-reply', error));
+                    }
                 })
 
             break;
-        /* Retrieve current community service points held by student */
 
         /* Show current community service events */
         case "showCurrentCommunityServiceEvents":
@@ -92,6 +99,15 @@ module.exports = function(io,speech,u_id,param){
 
             break;
 
+        case "askHelp":
+            message = "Hello there, I will be your personal assistant. <br /><br />" +
+                      "You can ask me several things abaout your study information. <br /><br />" +
+                      "Currently, I only have information for your schedules, scores, financial, and SAT/community hour. <br /><br />" +
+                      "Which one would you ask?";
+
+            io.emit('bot-reply', message);
+            break;
+
         ///////SAT CONTROLLER//////
 
         case "whatIsSat":
@@ -105,25 +121,24 @@ module.exports = function(io,speech,u_id,param){
 
         case "currentSatPoints":
 
-            satController.getTotalSatPoints()
+            satController.getTotalSatPoints(uid)
                 .then((points) => {
-                    if(!points)
-                    {
+                    if(!points){
                         io.emit('bot-reply', "None");
                     }
-                    else
-                    {    
-                        satController.getSatDetails()
+                    else{    
+                        satController.getSatDetails(uid)
                             .then( (details) => {
                                 var activities = "";
 
                                 details.forEach(function(data) {
-                                    activities += data.title + " - " + data.organization + ": " + data.points + "<br />";
+                                    activities += "<br /><b>" + data.title + "</b> - " + data.organization + ": " + data.points ;
                                 });
 
                                 io.emit('bot-reply', "You ammased a total of " + points + " points out of 120 points. <br/><br/>" +
-                                    " Here is your SAT summary: </br>" +
-                                    activities);
+                                    " Here is your SAT summary:" +
+                                    activities +
+                                    "</br></br>Would you like to see some upcoming events for your SAT?");
                             });
                     }
                 })
@@ -139,7 +154,7 @@ module.exports = function(io,speech,u_id,param){
                             details += data.name + " - " + data.organization + ": " + data.event_date + "<br />";
                         });
 
-                        io.emit('bot-reply', "Here some upcoming events: <br/><br/>" +
+                        io.emit('bot-reply', "Here are some upcoming events: <br/><br/>" +
                             details);
                 })
             break; 
@@ -149,37 +164,41 @@ module.exports = function(io,speech,u_id,param){
         case "financialShowAccount":
             financialAccountController.getBankAccount(uid)
                 .then((account) => {
-                    io.emit('bot-reply', "Your bank account is: " + account.bank_account + "</br></br>"+
+                    io.emit('bot-reply', "Here is your bank account is: " + account.bank_account + "</br></br>"+
                             "Your virtual account is: " + account.virtual_account);
                 })
             break;
 
         case "financialShowBill":
-            financialController.getTotalCharge()
+            financialController.getTotalCharge(uid)
                 .then((charge) => {
-                    financialController.getTotalPayment()
+                    financialController.getTotalPayment(uid)
                         .then((payment) => {
                             var bill = charge - payment;
-                            financialController.getFinancialDetails()
+                            financialController.getFinancialDetails(uid)
                                 .then((finances) => {
-                                    var details = "";
+                                    if(finances.length==0){
+                                        io.emit('bot-reply', "You're don't have any financial records");
+                                    }
+                                    else{
+                                        var details = "";
 
-                                    finances.forEach(function(data) {
-                                        data.due_date = dateFormat(data.due_date, "isoDate");
-                                        if(data.charge != 0)
-                                        {
-                                            details += data.item + " - " + data.term + " - Charge: Rp." + data.charge + " - " + data.due_date + "<br />";
-                                        }
-                                        else if(data.payment != 0)
-                                        {
-                                            details += data.item + " - " + data.term + " - Payment: Rp." + data.payment + " - " + data.due_date + "<br />";
-                                        }
+                                        finances.forEach(function(data) {
+                                            data.due_date = dateFormat(data.due_date, "isoDate");
+                                            if(data.charge != 0)
+                                            {
+                                                details += "<b>" + data.item + "</b> - " + data.term + " - Charge: Rp." + data.charge + " - " + data.due_date + "<br />";
+                                            }
+                                            else if(data.payment != 0)
+                                            {
+                                                details += "<b>" + data.item + "</b> - " + data.term + " - Payment: Rp." + data.payment + " - " + data.due_date + "<br />";
+                                            }
                                         
-                                    });
+                                        });
 
-                                    io.emit('bot-reply', details);
+                                        io.emit('bot-reply', "Here are your billing records (5 most recents): </br></br> " + details + "<br /> Your remaining charges is Rp." + bill);
+                                    }
                                 })
-                            
                         })    
                 })
             break;
@@ -188,32 +207,38 @@ module.exports = function(io,speech,u_id,param){
 
         case "askCourses":
         var courseDetails = "";
-        	takenCourseController.getSchedule()
-        		.then((schedules) =>{    		
-					schedules.forEach(function(data, index) {
-						courseController.getCourseDetails(data.course_id)
-							.then((courses) => {
-								classesController.getDetails(data.course_id, data.class_id)
-									.then((classes) => {
-                                		classes.forEach(function(data2) {
-                                            courseDetails += data.course_id + " - " + courses.course_name + " - " + data.class_id + " - " + data2.day + ", " + data2.time +"<br />";
-                                        });
+            takenCourseController.getSchedule(uid)
+                .then((schedules) =>{           
+                    if(schedules.length==0){
+                        io.emit('bot-reply', "You're not enrolled in any class");
+                    }
+                    else{
+                        schedules.forEach(function(data, index) {
+                            courseController.getCourseDetails(data.course_id)
+                                .then((courses) => {
+                                    classesController.getDetails(data.course_id, data.class_id)
+                                        .then((classes) => {
+                                            classes.forEach(function(data2) {
+                                                courseDetails += "<br /><b>" + data.course_id + " - " + courses.course_name + " </b>- " + data.class_id + " - " + data2.day + ", " + data2.time +"<br />";
+                                            });
                                         
 
-                                		if(index == schedules.length - 1){
-                                    		io.emit('bot-reply', courseDetails);
-                                		}
-                                	})
-                            })										
-					});	
-        		})
+                                            if(index == schedules.length - 1){
+                                                io.emit('bot-reply', "Here are the courses where you are enrolled in: </br>" + courseDetails);
+                                            }
+                                        })
+                                })                                      
+                        });
+                    }           
+                })
+
             break;
 
         case "askSchedule":
         //var param = "Networking";
         courseController.getCourse(param)
             .then((course) => {
-                takenCourseController.checkStudent(course.course_id)
+                takenCourseController.checkStudent(course.course_id,uid)
                     .then((tClass) => {
                         if(!tClass){
                             io.emit('bot-reply', "You're not in class");
@@ -223,7 +248,7 @@ module.exports = function(io,speech,u_id,param){
                             .then((classes) => {
                                 var classDetails = "";
                                 classes.forEach(function(data) {
-                                            classDetails += course.course_name + " - " + data.time +"<br /> <br />";
+                                            classDetails += "The schedule for " + course.course_name + " is on " + data.time +"<br /> <br />";
                                 });
                                 
                                 io.emit('bot-reply', classDetails);
@@ -233,5 +258,42 @@ module.exports = function(io,speech,u_id,param){
 
             })
             .catch(error => io.emit('bot-reply', "Sorry, the claas that you ask is not found"));
+        break;
+
+        case "showScores":
+        var scoreDetails = "";
+
+        scoreController.getScore(uid)
+            .then((scores) => {
+                scores.forEach(function(data, index) {
+                    courseController.getCourseDetails(data.course_id)
+                        .then((courses) => {                           
+                            scoreDetails += "<br/><b>" + courses.course_name + "</b> - " + data.grades + "<br/>";
+
+                            if(index == scores.length - 1){
+                                io.emit('bot-reply', "This is the list of your grades: </br>" + scoreDetails);
+                            }
+                        })
+                        
+                });
+            })
+        break;
+
+        case "askScore":
+        courseController.getCourse(param)
+            .then((course) => {
+                scoreController.checkStudent(course.course_id,uid)
+                    .then((stud) => {
+                        if(!stud){
+                            io.emit('bot-reply', "You're not in course");
+                        }
+                        else if(stud.grades=="NA"){
+                            io.emit('bot-reply', "Your grade for " + course.course_name + " is not available");
+                        }
+                        else{
+                            io.emit('bot-reply', "Your grade for " + course.course_name + " is " + stud.grades);
+                        }
+                    })
+            })
     }
 }

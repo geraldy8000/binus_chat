@@ -26,11 +26,15 @@ module.exports = function(io,req){
             request.on('response', function(response){
                 if(response.result.action === 'input.unknown'){
                     console.log(response); //debug
-                    io.emit('bot-reply', response.result.fulfillment.speech);
+                    socket.emit('bot-reply', response.result.fulfillment.speech);
+                }
+                else if(response.result.action.match(/chat.*/)){
+                    console.log(response); //debug
+                    socket.emit('bot-reply', response.result.fulfillment.speech);
                 }
                 else{
                     console.log(response); //debug
-                    speech(io,response.result.action,data.uid,response.result.parameters.class);
+                    speech(socket,response.result.action,data.uid,response.result.parameters.class);
                 }
             })
             request.end();

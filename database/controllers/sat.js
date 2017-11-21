@@ -100,14 +100,14 @@ module.exports = {
     *                             RETURN QUERY FROM MODEL 
     * ------------------------------------------------------------------------------------- */
 
-    getTotalSatPoints(){
+    getTotalSatPoints(uid){
         return sat
-            .sum('points', {where:{student_id:1701319823}})
+            .sum('points', {where:{student_id:uid}})
     },
 
-    getSatDetails(){
+    getSatDetails(uid){
         return sat
-            .findAll({where: {student_id:1701319823},
+            .findAll({where: {student_id:uid},
                       raw: true,
                       attributes: ['title','organization','level','points']})
     },

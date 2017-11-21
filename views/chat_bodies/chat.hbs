@@ -1,12 +1,9 @@
 <div class="w-nav navbar" data-collapse="all" data-animation="over-left" data-duration="400" data-contain="1" data-easing="ease-out-quint" data-no-scroll="1">
   <div class="w-container">
     <div class="wrapper-mask" data-ix="menu-mask"></div>
-    <div class="navbar-title">Release v.0.0.0</div>
-    <a class="w-inline-block navbar-button" href="messages.html" data-load="1">
-      <div class="navbar-button-icon icon ion-ios-arrow-thin-left"></div>
-    </a>
-    <a class="w-inline-block navbar-button right" href="http://localhost:3000/" data-ix="search-box">
-      <div class="navbar-button-icon smaller icon ion-ios-gear-outline" data-load="1"></div>
+    <div class="navbar-title">Binus Chat</div>
+    <a class="w-inline-block navbar-button right" href="/settings" data-ix="search-box">
+      <div class="navbar-button-icon smaller icon ion-navicon-round" data-load="1"></div>
     </a>
   </div>
 </div>
@@ -15,13 +12,13 @@
       <!--.chat-body-->
       <li class="w-clearfix list-chat" data-ix="list-item">
       <div class="column-left chat">
-          <div class="image-message chat"><img src="chat/images/128 (4).jpg">
+          <div class="image-message chat"><img src="chat/images/logo.png">
           </div>
       </div>
       <div class="w-clearfix column-right chat">
           <div class="arrow-globe"></div>
-          <div class="chat-text">Hello {{ name }}, I am your Binus Personal Assistant! <br /><br />Currently i cannot do anything since I'm still in progress...</div>
-          <div class="chat-time">3 mins ago</div>
+          <div class="chat-text">Hello, I am your Binus Personal Assistant! <br /><br />Please ask for help if you want to know what information I can give to you</div>
+          <div class="chat-time">{{ time }}</div>
       </div>
       </li>
       <!--./chat-body-->
@@ -30,9 +27,9 @@
 <div class="input-chat-block">
   <div class="w-form">
       <form autocomplete="off" class="w-clearfix" id="wf-form-Send" name="wf-form-Send" data-name="Send" action="#">
-		    <input class="w-input input-chat" id="chat-message" type="text" placeholder="Your message" name="email" data-name="Email" required="required">
+		    <input type="text" rows="1" class="w-input input-chat" id="chat-message" placeholder="Your message" name="email" data-name="Email" required="required" >
         <input type="hidden" id="uid" name="uid" value="{{ name }}">
-		    <input class="w-button chat-button" type="submit" value="Send" data-wait="Please wait...">
+		    <button class="w-button chat-button" type="submit" value="Send" data-wait="Please wait..."><i class="icon ion-android-send"></i></button>
       </form>
       <div class="w-form-done">
       	<p>Thank you! Your submission has been received!</p>

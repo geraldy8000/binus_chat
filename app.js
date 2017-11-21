@@ -56,23 +56,74 @@ app.use('/', route_user);
 
 app.post('/masuk', function(req, res){
   sess = req.session;
-  var student_id = req.body.email;
+  var student_id = req.body.uid;
   var password = req.body.password;
-  sess.email = req.body.email;
-  studentController.getPassword(student_id)
+  sess.uid = req.body.uid;
+  if(student_id=="" && password=="")
+  {
+    var string = encodeURIComponent('Complete the fields');
+    res.redirect('/login?text=' + string)
+  }
+
+
+  if(isNaN(student_id))
+  {
+    var string = encodeURIComponent('ID is not a number');
+    res.redirect('/login?text=' + string)
+    console.log(isNaN(student_id))
+  }
+  else
+  {
+    studentController.getPassword(student_id)
     .then((pass) => {
-      if(pass.password==password)
+      if(pass)
       {
-        //res.render('chat_bodies/chat', { layout: 'user_layout' , name: sess.email });
-        //console.log("id is " + sess.email+ " pass is " + pass.password);
-        res.redirect('/');
+        if(pass.password==password)
+        {
+          //res.render('chat_bodies/chat', { layout: 'user_layout' , name: sess.email });
+          //console.log("id is " + sess.email+ " pass is " + pass.password);
+          res.redirect('/');
+        }
+        else
+        {
+          var string = encodeURIComponent('ID or password is invalid');
+          res.redirect('/login?text=' + string);
+          console.log("ID or password is invalid");
+        }    
       }
       else
       {
-      	res.render('chat_bodies/login', { layout: 'user_layout', text: 'ID or password is invalid' });
+        var string = encodeURIComponent('ID or password is invalid');
+        res.redirect('/login?text=' + string);
         console.log("ID or password is invalid");
-      }
+      }      
     })
+  } 
+  
+});
+
+app.post('/chpass', function(req, res){
+  sess = req.session;
+
+  var uid = sess.uid;
+  var oldPassword = req.body.oldPassword;
+  var newPassword = req.body.newPassword;
+  var confirmPassword = req.body.confirmPassword;
+  studentController.getPassword(uid)
+  .then((pass) =>
+  {
+    if(pass.password==oldPassword && newPassword==confirmPassword)
+    {
+      studentController.chpass(uid, newPassword)
+      res.redirect('/login');
+    }
+    else
+    {
+      res.render('chat_bodies/password', { layout: 'user_layout', text: "Wrong Password" });
+      console.log("invalid")
+    }
+  })
+
 });
 
 // catch 404 and forward to error handler

@@ -15,19 +15,34 @@ module.exports = {
     },
     insertNewData(req,res){
         return classes
-            .create({
-                course_id: req.body.course_id,
-                class_id: req.body.class_id,
-                day: req.body.day,
-                time: req.body.time,
-                scu: req.body.scu
+            .findOne({
+                where: {
+                    course_id: req.body.course_id,
+                    class_id: req.body.class_id
+                }
             })
-            .then( (cl) => res.status(201).send(cl))
-            .catch(error => res.status(400).send(error));
+            .then((cl) => {
+                if(cl) {
+                    return res.status(404).send({
+                        message: 'Class has been inputted',
+                    });
+                }
+                return classes
+                    .create({
+                        course_id: req.body.course_id,
+                        class_id: req.body.class_id,
+                        day: req.body.day,
+                        time: req.body.time,
+                        scu: req.body.scu
+                    })
+                    .then( (cl) => res.status(201).send(cl))
+                    .catch(error => res.status(400).send(error));
+            })
+        
     },
     update(req, res) {
     return classes
-        .findOne({where: {id: req.params.id}})
+        .findOne({where: {id: req.body.id}})
         .then(cl => {
             if(cl){
                 cl.updateAttributes({

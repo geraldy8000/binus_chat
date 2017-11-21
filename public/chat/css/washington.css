@@ -69,8 +69,11 @@ a {
   position: fixed;
   z-index: 5;
   height: 60px;
-  padding-top: 15px;
-  background-color: white;
+  padding-top: 10px;
+  background-color: #0098D7;
+  color: white;
+  border-bottom: 1px solid #ccc;
+  border-radius: 5px;
 }
 .mobile-wrapper {
   position: relative;
@@ -89,12 +92,15 @@ a {
   width: 45px;
   height: 45px;
   padding: 0px;
-  color: #ccc;
+  color: white;
   line-height: 49px;
   text-align: center;
 }
 .navbar-button.left {
   float: left;
+}
+.navbar-button.left:active {
+  color: #ccc;
 }
 .navbar-button.left.w--open {
   background-color: transparent;
@@ -103,7 +109,7 @@ a {
   float: right;
 }
 .navbar-button.right:active {
-  color: #333;
+  color: #ccc;
 }
 .navbar-button.right.bigger {
   font-size: 16px;
@@ -177,7 +183,6 @@ a {
 .list.list-chats {
   padding-top: 24px;
   padding-bottom: 65px;
-  border-top: 1px solid #e7e7e9;
 }
 .list-item {
   overflow-x: hidden;
@@ -306,10 +311,11 @@ a {
 }
 .logo-login {
   height: 211px;
-  background-image: url('../images/logoStandford4.png');
+  background-image: url('../images/logo.png');
   background-position: 50% 50%;
   background-size: 204px;
   background-repeat: no-repeat;
+  border-bottom: 1px solid #ebebeb;
 }
 .logo-login.smaller {
   height: 97px;
@@ -324,6 +330,13 @@ a {
   right: 0px;
   bottom: 0px;
   padding-bottom: 5px;
+}
+.middle-section {
+  position: relative;
+  left: 0px;
+  right: 0px;
+  bottom: 0px;
+  padding-top: 40%;
 }
 .padding {
   padding-right: 28px;
@@ -363,8 +376,8 @@ a {
   width: 100%;
   height: 51px;
   padding: 12px;
-  border-radius: 2px;
-  background-color: #4fd2c2;
+  border-radius: 10px;
+  background-color: #0098D7;
   color: white;
   font-size: 12px;
   line-height: 26px;
@@ -373,7 +386,7 @@ a {
   text-decoration: none;
 }
 .action-button:active {
-  background-color: #3ab5a7;
+  background-color: #0077aa;
 }
 .action-button.grey {
   background-color: #333;
@@ -383,7 +396,7 @@ a {
 }
 .label-form {
   margin-bottom: 0px;
-  color: #ccc;
+  color: #535256;
   font-size: 9px;
   line-height: 11px;
   letter-spacing: 1px;
@@ -392,6 +405,17 @@ a {
   display: inline-block;
   float: left;
   line-height: 36px;
+}
+.warning-text {
+  margin-bottom: 0px;
+  color: #b71d09;
+  font-size: 9px;
+  line-height: 11px;
+  letter-spacing: 1px;
+}
+.h-line{
+  height: 1;
+  width: 100%;
 }
 .input-form {
   display: inline-block;
@@ -403,12 +427,12 @@ a {
   border-bottom-width: 1px;
   border-bottom-color: #e6e6e6;
   border-radius: 0px;
-  background-color: transparent;
+  background-color: white;
   color: #222;
   font-size: 12px;
 }
 .input-form:focus {
-  border-bottom-color: #4fd2c2;
+  border-bottom-color: #0098D7;
 }
 .input-form.left {
   width: 100%;
@@ -442,6 +466,9 @@ a {
 }
 .separator-fields {
   height: 8px;
+}
+.bold-separator-fields {
+  height: 15px;
 }
 .right-input-link {
   position: absolute;
@@ -918,7 +945,7 @@ a {
   float: right;
   border-top-left-radius: 12px;
   border-top-right-radius: 0px;
-  background-color: #4fd2c2;
+  background-color: #1bdb11;
   color: white;
 }
 .arrow-globe {
@@ -934,7 +961,7 @@ a {
   top: 0px;
   right: 9px;
   border-right: 0px none transparent;
-  border-left: 12px solid #4fd2c2;
+  border-left: 12px solid #1bdb11;
 }
 .chat-time {
   display: block;
@@ -962,8 +989,8 @@ a {
   padding-top: 10px;
   padding-right: 10px;
   padding-left: 10px;
-  border-top: 1px solid #ebebeb;
-  background-color: #f2f2f2;
+  border-top: 1px solid #ccc;
+  background-color: #ffffff;
 }
 .input-chat {
   width: 82%;
@@ -976,15 +1003,16 @@ a {
   font-size: 11px;
 }
 .input-chat:focus {
-  border-bottom-color: #4fd2c2;
+  border-bottom-color: #0098D7;
 }
 .chat-button {
   width: 18%;
   padding: 9px 0px 9px 7px;
   float: right;
   background-color: transparent;
-  color: #4fd2c2;
-  font-size: 12px;
+  color: #0098D7;
+  font-size: 28px;
+  outline: none;
 }
 .slider-element-test {
   padding-top: 72px;

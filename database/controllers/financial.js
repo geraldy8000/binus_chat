@@ -29,7 +29,7 @@ module.exports = {
 
     destroy(req,res){
         return financial
-            .findById(req.params.id)
+            .findById(req.body.id)
             .then(fin => {
             	if (!fin) {
                     return res.status(400).send({
@@ -44,19 +44,24 @@ module.exports = {
             .catch(error => res.status(400).send(error));
     },
 
-    getTotalCharge(){
+    /* -------------------------------------------------------------------------------------
+    *                             RETURN QUERY FROM MODEL 
+    * ------------------------------------------------------------------------------------- */
+
+
+    getTotalCharge(uid){
         return financial
-            .sum('charge', {where:{student_id:1701319823}})
+            .sum('charge', {where:{student_id:uid}})
     },
 
-    getTotalPayment(){
+    getTotalPayment(uid){
     	return financial
-    		.sum('payment', {where:{student_id:1701319823}})
+    		.sum('payment', {where:{student_id:uid}})
     },
 
-    getFinancialDetails(){
+    getFinancialDetails(uid){
         return financial
-            .findAll({where: {student_id:1701319823},
+            .findAll({where: {student_id:uid},
                       raw: true,
                       order: '"id" DESC'})
     },

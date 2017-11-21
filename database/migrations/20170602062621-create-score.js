@@ -1,7 +1,7 @@
 'use strict';
 module.exports = {
   up: function(queryInterface, Sequelize) {
-    return queryInterface.createTable('takenCourse', {
+    return queryInterface.createTable('score', {
       id: {
         allowNull: false,
         autoIncrement: true,
@@ -26,9 +26,9 @@ module.exports = {
           as:'course_id',
         }
       },
-      class_id: {
+      grades: {
         type: Sequelize.STRING,
-        allowNull: false
+        defaultValue: 'NA'
       },
       createdAt: {
         allowNull: false,
@@ -41,6 +41,6 @@ module.exports = {
     });
   },
   down: function(queryInterface, Sequelize) {
-    return queryInterface.dropTable('takenCourse');
+    return queryInterface.dropTable('score');
   }
 };

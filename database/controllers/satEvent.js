@@ -24,5 +24,21 @@ module.exports = {
     getAllEvents(){
         return satEvent
             .findAll({raw: true})
-    }
+    },
+    destroy(req,res){
+        return satEvent
+            .findById(req.body.id)
+            .then(sa => {
+                if (!sa) {
+                    return res.status(400).send({
+                        message: 'Event Not Found',
+                    });
+                }
+                sa
+                    .destroy()
+                    .then( (sa) => res.status(201).send(sa))
+                    .catch(error => res.status(400).send(error));
+            })
+            .catch(error => res.status(400).send(error));
+    },
 };

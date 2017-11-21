@@ -1,0 +1,39 @@
+<div class="w-nav navbar" data-collapse="all" data-animation="over-left" data-duration="400" data-contain="1" data-easing="ease-out-quint" data-no-scroll="1">
+  <div class="w-container">
+    <div class="wrapper-mask" data-ix="menu-mask"></div>
+    <div class="navbar-title">Binus Chat</div>
+    <a class="w-inline-block navbar-button left" href="/" data-load="1">
+      <div class="navbar-button-icon icon ion-ios-arrow-thin-left"></div>
+    </a>
+    <a class="w-inline-block navbar-button right" href="/settings" data-ix="search-box">
+      <div class="navbar-button-icon smaller icon ion-navicon-round" data-load="1"></div>
+    </a>
+  </div>
+</div>
+<div class="body padding">
+  <div class="middle-section padding">
+      <div class="w-form">
+      <form action="/password" method="get" >
+          <div class="separator-button-input"></div>
+          <button class="w-button action-button" type="submit" value="Sign In" data-wait="Please wait...">Change Password</button>
+          <div class="separator-button"></div>
+      </form>
+      <form action="/logout" method="get" id="logout">
+          <div class="separator-button-input"></div>
+          <button class="w-button action-button" type="submit" value="Sign In" data-wait="Please wait..." onclick=" 
+          function test(){ 
+            this.form.action=sessionStorage.clear()  
+          } 
+          test(); 
+          return false;">Logout</button>
+          <div class="separator-button"></div>
+      </form>
+      <div class="w-form-done">
+          <p>Thank you! Your submission has been received!</p>
+      </div>
+      <div class="w-form-fail">
+          <p>Oops! Something went wrong while submitting the form</p>
+      </div>
+      </div>
+  </div>
+</div>

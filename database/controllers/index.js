@@ -8,6 +8,7 @@ var satEvent = require('./satEvent');
 var course = require('./course');
 var takenCourse = require('./takenCourse');
 var classes = require('./classes');
+var score = require('./score');
 
 module.exports = {
   communityService,
@@ -19,5 +20,6 @@ module.exports = {
   satEvent,
   course,
   takenCourse,
-  classes
+  classes,
+  score
 };

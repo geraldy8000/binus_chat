@@ -1,6 +1,7 @@
 var takenCourse = require('../models').takenCourse;
 //var course = require('../course').course;
 var classes = require('../models').classes;
+var score = require('../models').score;
 
 module.exports = {
     listAll(req,res){
@@ -29,30 +30,63 @@ module.exports = {
                         message: 'Class Not Found',
                     });
                 }
+
                 return takenCourse
-                    .create({
-                        student_id: req.body.student_id,
-                        course_id: req.body.course_id,
-                        class_id: req.body.class_id
+                    .findOne({
+                        where: {
+                            student_id: req.body.student_id,
+                            course_id: req.body.course_id,
+                        }
                     })
-                    .then( (co) => res.status(201).send(co))
-                    .catch(error => res.status(400).send(error));
+                    .then((co) => {
+                        if(co) {
+                            return res.status(404).send({
+                                message: 'Course has been taken',
+                            });
+                        }
+                        return takenCourse
+                            .create({
+                                student_id: req.body.student_id,
+                                course_id: req.body.course_id,
+                                class_id: req.body.class_id
+                            })
+                            .then( (co) => res.status(201).send(co))
+                            .catch(error => res.status(400).send(error));
+                    })
                         
             })   
             .catch(error => res.status(400).send(error));       
     },
-    getSchedule(){
+    destroy(req,res){
         return takenCourse
-            .findAll({where: {student_id:1701319823},
-                      raw: true})
+            .findById(req.body.id)
+            .then(co => {
+                if (!co) {
+                    return res.status(400).send({
+                        message: 'Course Taken Not Found',
+                    });
+                }
+                co
+                    .destroy()
+                    .then( (co) => res.status(201).send(co))
+                    .catch(error => res.status(400).send(error));
+            })
+            .catch(error => res.status(400).send(error));
     },
-    checkStudent(co_id){
+    getSchedule(uid){
+        return takenCourse
+            .findAll({where: {student_id:uid},
+                        raw: true,
+                        order: '"course_id" ASC'})
+    },
+    checkStudent(co_id,uid){
         return takenCourse
             .findOne({
                 where: {
                     course_id: co_id,
-                    student_id:1701319823
+                    student_id:uid
                 }
             })
-    }
+    },
+    
 };
